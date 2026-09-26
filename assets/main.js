@@ -10,6 +10,8 @@
     fr: {
       video: 'Vidéo de présentation',
       remove: 'Retirer un', add: 'Ajouter un', empty: 'Ton panier est vide.',
+      pay: 'Payer cet article', payEach: 'Paie chaque article ci-dessus', soon: 'Paiement bientôt disponible.',
+      paid: 'Merci pour ton achat ! Surveille ta boîte courriel.',
       close: 'Fermer',
       required: 'Remplis tous les champs pour continuer.',
       sending: 'Envoi en cours…',
@@ -20,6 +22,8 @@
     en: {
       video: 'Introduction video',
       remove: 'Remove one', add: 'Add one', empty: 'Your cart is empty.',
+      pay: 'Pay for this item', payEach: 'Pay for each item above', soon: 'Payment coming soon.',
+      paid: 'Thank you for your purchase! Keep an eye on your inbox.',
       close: 'Close',
       required: 'Please fill in every field to continue.',
       sending: 'Sending…',
@@ -85,6 +89,13 @@
   const badge = $('[data-cart-count]');
   const checkout = $('[data-checkout]');
   let lastFocus = null;
+  let emptyText = T.empty;
+
+  // Liens Stripe à jour depuis les cartes produit de la page (les anciens paniers n'en ont pas)
+  $$('.shop-card[data-id]').forEach(c => {
+    const item = cart.find(i => i.id === c.dataset.id);
+    if (item) item.link = c.dataset.stripeLink || '';
+  });
 
   const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 
@@ -94,7 +105,12 @@
     badge.textContent = count;
     badge.classList.toggle('visible', count > 0);
     totalEl.textContent = fmt(total);
-    checkout.disabled = count === 0;
+    // Stripe Payment Links : un lien par produit. Avec plusieurs produits, chacun se paie séparément.
+    const multi = cart.length > 1;
+    const ready = cart.length > 0 && cart.every(i => i.link);
+    checkout.disabled = !ready || multi;
+    checkout.textContent = multi ? T.payEach : checkout.dataset.label;
+    checkout.title = cart.length && !ready ? T.soon : '';
     itemsEl.innerHTML = cart.length
       ? cart.map(i => `
         <li class="cart-item">
@@ -107,10 +123,11 @@
               <span>${i.qty}</span>
               <button type="button" data-inc="${esc(i.id)}" aria-label="${T.add}">+</button>
             </div>
+            ${multi && i.link ? `<a class="cart-pay" href="${esc(i.link)}">${T.pay} →</a>` : ''}
           </div>
           <div class="cart-price">${fmt(i.price * i.qty)}</div>
         </li>`).join('')
-      : `<li class="cart-empty">${T.empty}</li>`;
+      : `<li class="cart-empty">${emptyText}</li>`;
   };
 
   const openCart = () => {
@@ -137,7 +154,8 @@
     const d = btn.closest('.shop-card').dataset;
     const found = cart.find(i => i.id === d.id);
     if (found) found.qty++;
-    else cart.push({ id: d.id, name: d.name, type: d.type, price: parseFloat(d.price), icon: d.icon || '📄', qty: 1 });
+    else cart.push({ id: d.id, name: d.name, type: d.type, price: parseFloat(d.price), icon: d.icon || '📄', link: d.stripeLink || '', qty: 1 });
+    emptyText = T.empty;
     save(); render(); openCart();
   }));
 
@@ -150,11 +168,22 @@
     save(); render();
   });
 
+  checkout.dataset.label = checkout.textContent;
   checkout.addEventListener('click', () => {
-    /* TODO : rediriger vers Stripe Checkout / ton processeur de paiement avec `cart` */
+    if (cart.length === 1 && cart[0].link) location.href = cart[0].link;
   });
 
-  render();
+  // Retour de Stripe après paiement (?paiement=ok) : on vide le panier et on remercie
+  const params = new URLSearchParams(location.search);
+  if (params.get('paiement') === 'ok') {
+    cart = []; save();
+    emptyText = T.paid;
+    params.delete('paiement');
+    history.replaceState(null, '', location.pathname + (params.toString() ? '?' + params : '') + location.hash);
+    render(); openCart();
+  } else {
+    render();
+  }
 
   /* ── Pop-up formulaire (5 s après l'arrivée) ── */
   const POPUP_KEY = 'tcc-popup';
