@@ -128,6 +128,63 @@
 
   render();
 
+  /* ── Pop-up formulaire (5 s après l'arrivée) ── */
+  const POPUP_KEY = 'tcc-popup';
+  const POPUP_DELAY = 5000;               // délai avant l'ouverture
+  const POPUP_SNOOZE = 7 * 24 * 3600e3;   // ne réapparaît pas pendant 7 jours après fermeture
+  const store = {
+    get: () => { try { return JSON.parse(localStorage.getItem(POPUP_KEY)) || {}; } catch (_) { return {}; } },
+    set: (v) => { try { localStorage.setItem(POPUP_KEY, JSON.stringify(v)); } catch (_) {} },
+  };
+  const srcForm = $('[data-lead-form]');
+  let popup = null;
+  if (srcForm && typeof HTMLDialogElement === 'function') {
+    popup = document.createElement('dialog');
+    popup.className = 'popup';
+    popup.setAttribute('aria-labelledby', 'popup-title');
+    popup.innerHTML = `
+      <button class="popup-close" type="button" aria-label="Fermer">×</button>
+      <p class="eyebrow">Passe à l'action</p>
+      <div class="divider"></div>
+      <h2 class="popup-title" id="popup-title">Parle-moi de <em>ta business</em>.</h2>
+      <p class="popup-desc">Réponds à quelques questions et je te reviens avec la prochaine étape qui a du sens pour toi.</p>`;
+    const clone = srcForm.cloneNode(true);
+    $$('[id]', clone).forEach(el => { el.id = 'popup-' + el.id; });
+    $$('label[for]', clone).forEach(el => { el.htmlFor = 'popup-' + el.htmlFor; });
+    const src = $('input[name="source"]', clone);
+    if (src) src.value = 'popup-' + src.value;
+    const goal = $('textarea', clone);
+    if (goal) goal.rows = 3;
+    popup.appendChild(clone);
+    body.appendChild(popup);
+
+    const closePopup = () => {
+      if (!popup.open) return;
+      popup.close();
+    };
+    popup.addEventListener('close', () => {
+      body.classList.remove('no-scroll');
+      const st = store.get();
+      if (!st.sent) store.set({ ...st, closedAt: Date.now() });
+    });
+    $('.popup-close', popup).addEventListener('click', closePopup);
+    // Clic sur le fond sombre = fermeture
+    popup.addEventListener('click', e => { if (e.target === popup) closePopup(); });
+    popup.addEventListener('lead:sent', () => setTimeout(closePopup, 2500));
+
+    const st = store.get();
+    const snoozed = st.sent || (st.closedAt && Date.now() - st.closedAt < POPUP_SNOOZE);
+    if (!snoozed) setTimeout(() => {
+      // Pas d'interruption si le visiteur est déjà occupé (panier, menu, formulaire)
+      const busy = drawer.classList.contains('open') || menu.classList.contains('open')
+        || (document.activeElement && document.activeElement.closest('form'))
+        || store.get().sent;
+      if (busy) return;
+      popup.showModal();
+      body.classList.add('no-scroll');
+    }, POPUP_DELAY);
+  }
+
   /* ── Formulaire (envoi vers le CRM via l'attribut action) ── */
   $$('[data-lead-form]').forEach(f => f.addEventListener('submit', async e => {
     e.preventDefault();
@@ -150,6 +207,8 @@
       f.reset();
       f.classList.remove('submitted');
       msg.textContent = 'Merci ! Je te reviens très bientôt.';
+      store.set({ ...store.get(), sent: true });
+      f.dispatchEvent(new CustomEvent('lead:sent', { bubbles: true }));
     } catch (_) {
       msg.textContent = 'Oups, l\u2019envoi n\u2019a pas fonctionné. Réessaie dans un instant.';
     } finally {
