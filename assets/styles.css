@@ -455,6 +455,7 @@ body.no-scroll { overflow: hidden; }
 .lead-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .field-full { grid-column: 1 / -1; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .field label {
   font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted);
 }

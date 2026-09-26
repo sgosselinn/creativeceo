@@ -197,11 +197,30 @@
       return;
     }
     const action = f.getAttribute('action');
+    const data = Object.fromEntries(new FormData(f));
+    const bot = data.website;
+    delete data.website;
     btn.disabled = true;
     msg.textContent = 'Envoi en cours…';
     try {
-      if (action) {
-        const res = await fetch(action, { method: 'POST', body: new FormData(f), headers: { Accept: 'application/json' } });
+      // Champ piège rempli = robot : on fait semblant d'envoyer
+      if (action && !bot) {
+        const params = new URLSearchParams(location.search);
+        const payload = {
+          ...data,
+          full_name: `${data.first_name} ${data.last_name}`.trim(),
+          page_url: location.href,
+          referrer: document.referrer || '',
+          submitted_at: new Date().toISOString(),
+        };
+        ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(k => {
+          if (params.get(k)) payload[k] = params.get(k);
+        });
+        const res = await fetch(action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload),
+        });
         if (!res.ok) throw new Error(res.status);
       }
       f.reset();
