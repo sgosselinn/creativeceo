@@ -33,10 +33,12 @@
       <ul class="nav-links">
         <li><a href="./" data-page="paliers" aria-current="page">The Program</a></li>
         <li><a href="../#capsules">Lessons</a></li>
+        <li><a href="../#shop">Shop</a></li>
       </ul>
       <a class="nav-cta" href="../#capsules">Get started</a>
       <div class="nav-actions">
         <a class="lang-switch" href="../../paliers/" hreflang="fr" lang="fr" aria-label="Version française">FR</a>
+        <button class="cart-btn" type="button" data-cart-open aria-label="Open cart" aria-controls="cart">🛒<span class="cart-badge" data-cart-count aria-hidden="true">0</span></button>
         <button class="burger" type="button" data-menu-open aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">≡</button>
       </div>
     </div>
@@ -47,6 +49,7 @@
   <button class="mobile-close" type="button" data-menu-close aria-label="Close menu">×</button>
   <a href="./">The Program</a>
   <a href="../#capsules">Lessons</a>
+  <a href="../#shop">Shop</a>
   <a href="../#infolettre">Newsletter</a>
   <a class="btn btn-primary" href="../#capsules">Get started</a>
 </nav>
@@ -289,6 +292,7 @@
     <ul class="footer-links">
       <li><a href="./">The Program</a></li>
       <li><a href="../#capsules">Lessons</a></li>
+      <li><a href="../#shop">Shop</a></li>
       <li><a href="../#infolettre">Newsletter</a></li>
     </ul>
     <p class="footer-social">@sam.gosselin · <a href="#" rel="noopener">Instagram</a> · <a href="#" rel="noopener">YouTube</a></p>
@@ -296,6 +300,20 @@
   </div>
 </footer>
 
+<!-- ── CART DRAWER ── -->
+<div class="cart-overlay" data-cart-close></div>
+<aside class="cart-drawer" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+  <div class="cart-head">
+    <h2 class="cart-title" id="cart-title">My Cart</h2>
+    <button class="cart-close" type="button" data-cart-close aria-label="Close cart">×</button>
+  </div>
+  <ul class="cart-items" data-cart-items></ul>
+  <div class="cart-foot">
+    <div class="cart-subtotal"><span>Subtotal</span><span data-cart-total>$0</span></div>
+    <button class="checkout-btn" type="button" data-checkout>Checkout</button>
+    <button class="continue-btn" type="button" data-cart-close>Continue shopping</button>
+  </div>
+</aside>
 
 <script src="../../assets/main.js" defer></script>
 </body>

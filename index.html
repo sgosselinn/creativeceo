@@ -34,10 +34,12 @@
       <ul class="nav-links">
         <li><a href="#paliers">La Formation</a></li>
         <li><a href="#capsules">Capsules</a></li>
+        <li><a href="#shop">Boutique</a></li>
       </ul>
       <a class="nav-cta" href="#capsules">Commencer</a>
       <div class="nav-actions">
         <a class="lang-switch" href="en/" hreflang="en" lang="en" aria-label="English version">EN</a>
+        <button class="cart-btn" type="button" data-cart-open aria-label="Ouvrir le panier" aria-controls="cart">🛒<span class="cart-badge" data-cart-count aria-hidden="true">0</span></button>
         <button class="burger" type="button" data-menu-open aria-label="Ouvrir le menu" aria-controls="mobile-menu" aria-expanded="false">≡</button>
       </div>
     </div>
@@ -48,6 +50,7 @@
   <button class="mobile-close" type="button" data-menu-close aria-label="Fermer le menu">×</button>
   <a href="#paliers">La Formation</a>
   <a href="#capsules">Capsules</a>
+  <a href="#shop">Boutique</a>
   <a href="#infolettre">Infolettre</a>
   <a class="btn btn-primary" href="#capsules">Commencer</a>
 </nav>
@@ -187,8 +190,37 @@
     </div>
   </section>
 
+  <!-- ── SHOP ── -->
+  <section class="section bg-black" id="shop">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow">Boutique</p>
+        <div class="divider"></div>
+        <h2 class="section-title">Ressources pour <em>passer à l'action</em>.</h2>
+      </div>
+      <div class="shop-grid">
+        <!-- data-id unique · data-price en dollars · data-icon = emoji affiché dans le panier -->
+        <article class="shop-card" data-id="workbook-p1" data-name="Workbook Palier 1" data-type="Workbook PDF" data-price="27" data-icon="📄">
+          <div class="shop-thumb">
+            <span class="shop-ghost" aria-hidden="true">PDF</span>
+            <span class="shop-icon" aria-hidden="true">📄</span>
+          </div>
+          <div class="shop-body">
+            <span class="tag tag-sm">Workbook PDF</span>
+            <h3 class="shop-name">Workbook Palier 1</h3>
+            <p class="shop-desc">Guide complet avec exercices, espaces de réflexion et checklists.</p>
+            <div class="shop-foot">
+              <span class="price">27$</span>
+              <button class="add-btn" type="button" data-add>Ajouter</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- ── FORMULAIRE ── -->
-  <section class="section bg-black" id="formulaire">
+  <section class="section bg-surface" id="formulaire">
     <div class="container">
       <div class="lead">
         <div class="section-header center">
@@ -254,7 +286,7 @@
   </section>
 
   <!-- ── NEWSLETTER ── -->
-  <section class="section bg-surface" id="infolettre">
+  <section class="section bg-black" id="infolettre">
     <div class="container">
       <div class="newsletter">
         <p class="eyebrow">Infolettre</p>
@@ -283,6 +315,7 @@
     <ul class="footer-links">
       <li><a href="#paliers">La Formation</a></li>
       <li><a href="#capsules">Capsules</a></li>
+      <li><a href="#shop">Boutique</a></li>
       <li><a href="#infolettre">Infolettre</a></li>
     </ul>
     <p class="footer-social">@sam.gosselin · <a href="#" rel="noopener">Instagram</a> · <a href="#" rel="noopener">YouTube</a></p>
@@ -290,6 +323,21 @@
   </div>
 </footer>
 
+<!-- ── CART DRAWER ── -->
+<div class="cart-overlay" data-cart-close></div>
+<aside class="cart-drawer" id="cart" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+  <div class="cart-head">
+    <h2 class="cart-title" id="cart-title">Mon Panier</h2>
+    <button class="cart-close" type="button" data-cart-close aria-label="Fermer le panier">×</button>
+  </div>
+  <ul class="cart-items" data-cart-items></ul>
+  <div class="cart-foot">
+    <div class="cart-subtotal"><span>Sous-total</span><span data-cart-total>0$</span></div>
+    <!-- Branche ici ton lien de paiement (Stripe Checkout, Shopify, etc.) -->
+    <button class="checkout-btn" type="button" data-checkout>Procéder au paiement</button>
+    <button class="continue-btn" type="button" data-cart-close>Continuer mes achats</button>
+  </div>
+</aside>
 
 <script src="assets/main.js" defer></script>
 </body>
