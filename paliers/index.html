@@ -212,16 +212,67 @@
     </div>
   </section>
 
-  <!-- ── CTA FINAL ── -->
-  <section class="section bg-surface cta-final" id="commencer">
+  <!-- ── FORMULAIRE ── -->
+  <section class="section bg-surface" id="formulaire">
     <div class="container">
-      <p class="eyebrow">Prochaine étape</p>
-      <div class="divider"></div>
-      <h2 class="section-title">La structure <em>te libère</em>.</h2>
-      <p class="section-desc">Commence par les capsules gratuites du palier 1 — aucune carte de crédit requise.</p>
-      <div class="hero-ctas">
-        <a class="btn btn-primary" href="../#capsules">Commencer gratuitement</a>
-        <a class="btn btn-ghost" href="../#infolettre">Recevoir l'infolettre</a>
+      <div class="lead">
+        <div class="section-header center">
+          <p class="eyebrow">Prochaine étape</p>
+          <div class="divider"></div>
+          <h2 class="section-title">Parle-moi de <em>ta business</em>.</h2>
+          <p class="section-desc">Réponds à quelques questions et je te reviens avec la prochaine étape qui a du sens pour toi.</p>
+        </div>
+        <!-- CRM : mets l'URL d'envoi dans action="". Les noms de champs (name="…") sont ceux à associer dans le CRM. -->
+        <form class="lead-form" action="" method="post" data-lead-form novalidate>
+          <input type="hidden" name="source" value="paliers">
+          <div class="field">
+            <label for="paliers-first">Prénom</label>
+            <input id="paliers-first" name="first_name" type="text" autocomplete="given-name" required>
+          </div>
+          <div class="field">
+            <label for="paliers-last">Nom</label>
+            <input id="paliers-last" name="last_name" type="text" autocomplete="family-name" required>
+          </div>
+          <div class="field">
+            <label for="paliers-email">Courriel</label>
+            <input id="paliers-email" name="email" type="email" autocomplete="email" placeholder="ton@email.com" required>
+          </div>
+          <div class="field">
+            <label for="paliers-phone">Numéro de téléphone</label>
+            <input id="paliers-phone" name="phone" type="tel" autocomplete="tel" placeholder="514 555-0123" pattern="[0-9+\(\)\-\s\.]{10,}" required>
+          </div>
+          <div class="field">
+            <label for="paliers-occupation">Occupation</label>
+            <select id="paliers-occupation" name="occupation" required>
+              <option value="" selected disabled>Choisis une option</option>
+              <option>Vidéaste</option>
+              <option>Photographe</option>
+              <option>Vidéaste et photographe</option>
+              <option>Designer / graphiste</option>
+              <option>Autre créatif</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="paliers-revenue">Revenu mensuel</label>
+            <select id="paliers-revenue" name="monthly_revenue" required>
+              <option value="" selected disabled>Choisis une fourchette</option>
+              <option>Moins de 2 000$</option>
+              <option>2 000$ – 5 000$</option>
+              <option>5 000$ – 10 000$</option>
+              <option>10 000$ – 20 000$</option>
+              <option>Plus de 20 000$</option>
+            </select>
+          </div>
+          <div class="field field-full">
+            <label for="paliers-goal">Qu'est-ce que tu veux obtenir ?</label>
+            <textarea id="paliers-goal" name="goal" rows="4" placeholder="Ex. : des revenus stables, facturer plus cher, arrêter de tout faire seul…" required></textarea>
+          </div>
+          <div class="field-full">
+            <button class="btn btn-primary lead-submit" type="submit">Envoyer</button>
+            <p class="lead-msg" data-lead-msg role="status" aria-live="polite"></p>
+            <p class="lead-note">Tes informations restent confidentielles.</p>
+          </div>
+        </form>
       </div>
     </div>
   </section>

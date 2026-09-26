@@ -128,6 +128,35 @@
 
   render();
 
+  /* ── Formulaire (envoi vers le CRM via l'attribut action) ── */
+  $$('[data-lead-form]').forEach(f => f.addEventListener('submit', async e => {
+    e.preventDefault();
+    const msg = $('[data-lead-msg]', f);
+    const btn = $('button[type="submit"]', f);
+    f.classList.add('submitted');
+    if (!f.checkValidity()) {
+      msg.textContent = 'Remplis tous les champs pour continuer.';
+      $(':invalid', f).focus();
+      return;
+    }
+    const action = f.getAttribute('action');
+    btn.disabled = true;
+    msg.textContent = 'Envoi en cours…';
+    try {
+      if (action) {
+        const res = await fetch(action, { method: 'POST', body: new FormData(f), headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(res.status);
+      }
+      f.reset();
+      f.classList.remove('submitted');
+      msg.textContent = 'Merci ! Je te reviens très bientôt.';
+    } catch (_) {
+      msg.textContent = 'Oups, l\u2019envoi n\u2019a pas fonctionné. Réessaie dans un instant.';
+    } finally {
+      btn.disabled = false;
+    }
+  }));
+
   /* ── Newsletter (fallback si aucun action n'est défini) ── */
   const form = $('[data-newsletter]');
   if (form) form.addEventListener('submit', e => {
