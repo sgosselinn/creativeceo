@@ -115,6 +115,12 @@ body.no-scroll { overflow: hidden; }
 }
 .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
 .nav-actions { display: flex; align-items: center; gap: 12px; }
+.lang-switch {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-decoration: none;
+  color: var(--muted); border: 1px solid var(--border); padding: 9px 11px; line-height: 1;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.lang-switch:hover { color: var(--gold); border-color: var(--gold); }
 .cart-btn {
   position: relative; background: none; border: 1px solid var(--border);
   color: var(--gold); padding: 9px 13px; font-size: 16px; line-height: 1;

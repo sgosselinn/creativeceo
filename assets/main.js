@@ -4,6 +4,31 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const body = document.body;
 
+  /* ── Langue (lue sur <html lang>) ── */
+  const lang = document.documentElement.lang.startsWith('en') ? 'en' : 'fr';
+  const T = {
+    fr: {
+      video: 'Vidéo de présentation',
+      remove: 'Retirer un', add: 'Ajouter un', empty: 'Ton panier est vide.',
+      close: 'Fermer',
+      required: 'Remplis tous les champs pour continuer.',
+      sending: 'Envoi en cours…',
+      thanks: 'Merci ! Je te reviens très bientôt.',
+      error: 'Oups, l\u2019envoi n\u2019a pas fonctionné. Réessaie dans un instant.',
+      newsletter: 'Merci ! Surveille ta boîte courriel.',
+    },
+    en: {
+      video: 'Introduction video',
+      remove: 'Remove one', add: 'Add one', empty: 'Your cart is empty.',
+      close: 'Close',
+      required: 'Please fill in every field to continue.',
+      sending: 'Sending…',
+      thanks: 'Thank you! I\u2019ll get back to you very soon.',
+      error: 'Oops, something went wrong. Please try again in a moment.',
+      newsletter: 'Thanks! Keep an eye on your inbox.',
+    },
+  }[lang];
+
   /* ── Mobile menu ── */
   const menu = $('#mobile-menu');
   const burger = $('[data-menu-open]');
@@ -39,7 +64,7 @@
     f.src = src + (src.includes('?') ? '&' : '?') + 'autoplay=1';
     f.allow = 'autoplay; fullscreen; picture-in-picture';
     f.allowFullscreen = true;
-    f.title = 'Vidéo de présentation';
+    f.title = T.video;
     vsl.replaceChildren(f);
   });
 
@@ -48,7 +73,10 @@
   let cart = [];
   try { cart = JSON.parse(localStorage.getItem(KEY)) || []; } catch (_) { cart = []; }
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(cart)); } catch (_) {} };
-  const fmt = (n) => (Number.isInteger(n) ? n : n.toFixed(2).replace('.', ',')) + '$';
+  const fmt = (n) => {
+    const v = Number.isInteger(n) ? String(n) : (lang === 'fr' ? n.toFixed(2).replace('.', ',') : n.toFixed(2));
+    return lang === 'en' ? '$' + v : v + '$';
+  };
 
   const drawer = $('#cart');
   const overlay = $('.cart-overlay');
@@ -75,14 +103,14 @@
             <div class="cart-name">${esc(i.name)}</div>
             <div class="cart-type">${esc(i.type)}</div>
             <div class="qty">
-              <button type="button" data-dec="${esc(i.id)}" aria-label="Retirer un">−</button>
+              <button type="button" data-dec="${esc(i.id)}" aria-label="${T.remove}">−</button>
               <span>${i.qty}</span>
-              <button type="button" data-inc="${esc(i.id)}" aria-label="Ajouter un">+</button>
+              <button type="button" data-inc="${esc(i.id)}" aria-label="${T.add}">+</button>
             </div>
           </div>
           <div class="cart-price">${fmt(i.price * i.qty)}</div>
         </li>`).join('')
-      : '<li class="cart-empty">Ton panier est vide.</li>';
+      : `<li class="cart-empty">${T.empty}</li>`;
   };
 
   const openCart = () => {
@@ -142,12 +170,15 @@
     popup = document.createElement('dialog');
     popup.className = 'popup';
     popup.setAttribute('aria-labelledby', 'popup-title');
+    // Titre du pop-up repris de l'en-tête de la section formulaire (donc déjà dans la bonne langue)
+    const head = srcForm.closest('.lead');
+    const txt = (sel) => { const el = head && $(sel, head); return el ? el.innerHTML : ''; };
     popup.innerHTML = `
-      <button class="popup-close" type="button" aria-label="Fermer">×</button>
-      <p class="eyebrow">Passe à l'action</p>
+      <button class="popup-close" type="button" aria-label="${T.close}">×</button>
+      <p class="eyebrow">${txt('.eyebrow')}</p>
       <div class="divider"></div>
-      <h2 class="popup-title" id="popup-title">Parle-moi de <em>ta business</em>.</h2>
-      <p class="popup-desc">Réponds à quelques questions et je te reviens avec la prochaine étape qui a du sens pour toi.</p>`;
+      <h2 class="popup-title" id="popup-title">${txt('.section-title')}</h2>
+      <p class="popup-desc">${txt('.section-desc')}</p>`;
     const clone = srcForm.cloneNode(true);
     $$('[id]', clone).forEach(el => { el.id = 'popup-' + el.id; });
     $$('label[for]', clone).forEach(el => { el.htmlFor = 'popup-' + el.htmlFor; });
@@ -192,7 +223,7 @@
     const btn = $('button[type="submit"]', f);
     f.classList.add('submitted');
     if (!f.checkValidity()) {
-      msg.textContent = 'Remplis tous les champs pour continuer.';
+      msg.textContent = T.required;
       $(':invalid', f).focus();
       return;
     }
@@ -201,7 +232,7 @@
     const bot = data.website;
     delete data.website;
     btn.disabled = true;
-    msg.textContent = 'Envoi en cours…';
+    msg.textContent = T.sending;
     try {
       // Champ piège rempli = robot : on fait semblant d'envoyer
       if (action && !bot) {
@@ -209,6 +240,7 @@
         const payload = {
           ...data,
           full_name: `${data.first_name} ${data.last_name}`.trim(),
+          language: lang,
           page_url: location.href,
           referrer: document.referrer || '',
           submitted_at: new Date().toISOString(),
@@ -225,11 +257,11 @@
       }
       f.reset();
       f.classList.remove('submitted');
-      msg.textContent = 'Merci ! Je te reviens très bientôt.';
+      msg.textContent = T.thanks;
       store.set({ ...store.get(), sent: true });
       f.dispatchEvent(new CustomEvent('lead:sent', { bubbles: true }));
     } catch (_) {
-      msg.textContent = 'Oups, l\u2019envoi n\u2019a pas fonctionné. Réessaie dans un instant.';
+      msg.textContent = T.error;
     } finally {
       btn.disabled = false;
     }
@@ -240,7 +272,7 @@
   if (form) form.addEventListener('submit', e => {
     if (form.getAttribute('action')) return;
     e.preventDefault();
-    $('[data-newsletter-msg]').textContent = 'Merci ! Surveille ta boîte courriel.';
+    $('[data-newsletter-msg]').textContent = T.newsletter;
     form.reset();
   });
 })();
