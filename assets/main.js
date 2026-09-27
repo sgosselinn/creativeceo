@@ -91,6 +91,13 @@
   let lastFocus = null;
   let emptyText = T.empty;
 
+  // Sur la page qui contient la boutique : on retire du panier les produits qui n'existent plus
+  if ($('#shop')) {
+    const ids = $$('.shop-card[data-id]').map(c => c.dataset.id);
+    cart = cart.filter(i => ids.includes(i.id));
+    save();
+  }
+
   // Liens Stripe à jour depuis les cartes produit de la page (les anciens paniers n'en ont pas)
   $$('.shop-card[data-id]').forEach(c => {
     const item = cart.find(i => i.id === c.dataset.id);

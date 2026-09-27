@@ -334,6 +334,11 @@ body.no-scroll { overflow: hidden; }
 
 /* ── SHOP ── */
 .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
+.shop-empty {
+  grid-column: 1 / -1; padding: 48px 24px; text-align: center;
+  border: 1px solid var(--border); background: var(--surface);
+  font-family: var(--font-display); font-style: italic; font-size: 18px; color: var(--muted);
+}
 .shop-card {
   background: var(--surface); border: 1px solid var(--border); overflow: hidden;
   display: flex; flex-direction: column;
