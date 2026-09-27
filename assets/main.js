@@ -128,7 +128,7 @@
             <div class="qty">
               <button type="button" data-dec="${esc(i.id)}" aria-label="${T.remove}">−</button>
               <span>${i.qty}</span>
-              <button type="button" data-inc="${esc(i.id)}" aria-label="${T.add}">+</button>
+              <button type="button" data-inc="${esc(i.id)}" aria-label="${T.add}"${i.max && i.qty >= i.max ? ' disabled' : ''}>+</button>
             </div>
             ${multi && i.link ? `<a class="cart-pay" href="${esc(i.link)}">${T.pay} →</a>` : ''}
           </div>
@@ -160,8 +160,9 @@
   $$('[data-add]').forEach(btn => btn.addEventListener('click', () => {
     const d = btn.closest('.shop-card').dataset;
     const found = cart.find(i => i.id === d.id);
-    if (found) found.qty++;
-    else cart.push({ id: d.id, name: d.name, type: d.type, price: parseFloat(d.price), icon: d.icon || '📄', link: d.stripeLink || '', qty: 1 });
+    const max = parseInt(d.maxQty, 10) || Infinity;
+    if (found) found.qty = Math.min(found.qty + 1, max);
+    else cart.push({ id: d.id, name: d.name, type: d.type, price: parseFloat(d.price), icon: d.icon || '📄', link: d.stripeLink || '', max: d.maxQty ? max : null, qty: 1 });
     emptyText = T.empty;
     save(); render(); openCart();
   }));
@@ -171,6 +172,7 @@
     const id = b.dataset.inc || b.dataset.dec;
     const item = cart.find(i => i.id === id); if (!item) return;
     item.qty += b.dataset.inc ? 1 : -1;
+    if (item.max) item.qty = Math.min(item.qty, item.max);
     if (item.qty <= 0) cart = cart.filter(i => i !== item);
     save(); render();
   });

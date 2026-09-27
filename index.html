@@ -106,7 +106,8 @@
           <p class="palier-level">Starter</p>
           <h3 class="palier-name">La Base</h3>
           <p class="palier-desc">Comprends ton modèle, structure ton offre et commence à vendre avec clarté.</p>
-          <span class="tag">Gratuit</span>
+          <span class="tag">197$</span>
+          <a class="btn btn-primary palier-buy" href="https://buy.stripe.com/6oUaEZ1F418B5QZgnB6Ri00">Acheter le palier 1</a>
         </article>
         <article class="palier-card featured">
           <div class="palier-num" aria-hidden="true">02</div>
@@ -144,7 +145,7 @@
             <span class="capsule-duration">8:42</span>
           </div>
           <div class="capsule-body">
-            <span class="tag tag-sm">Palier 1 · Gratuit</span>
+            <span class="tag tag-sm">Palier 1 · Extrait gratuit</span>
             <h3 class="capsule-title">Évalue ton offre actuelle en 20 minutes</h3>
             <p class="capsule-desc">Outil pratique pour identifier où ton argent fuit chaque mois.</p>
             <ul class="capsule-notes">
@@ -200,7 +201,22 @@
       </div>
       <div class="shop-grid">
         <!-- data-id unique · data-price en dollars · data-icon = emoji affiché dans le panier · data-stripe-link = lien de paiement Stripe du produit -->
-        <p class="shop-empty">De nouvelles ressources arrivent bientôt.</p>
+        <!-- data-max-qty="1" : une formation s'achète une seule fois -->
+        <article class="shop-card" data-id="palier-1" data-name="Palier 1 — La Base" data-type="Formation" data-price="197" data-icon="🎓" data-max-qty="1" data-stripe-link="https://buy.stripe.com/6oUaEZ1F418B5QZgnB6Ri00">
+          <div class="shop-thumb">
+            <span class="shop-ghost" aria-hidden="true">01</span>
+            <span class="shop-icon" aria-hidden="true">🎓</span>
+          </div>
+          <div class="shop-body">
+            <span class="tag tag-sm">Formation</span>
+            <h3 class="shop-name">Palier 1 — La Base</h3>
+            <p class="shop-desc">Comprends ton modèle, structure ton offre et commence à vendre avec clarté.</p>
+            <div class="shop-foot">
+              <span class="price">197$</span>
+              <button class="add-btn" type="button" data-add>Ajouter</button>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
   </section>

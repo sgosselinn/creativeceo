@@ -253,6 +253,7 @@ body.no-scroll { overflow: hidden; }
 .palier-name { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
 .palier-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
 .palier-card .tag { margin-top: 20px; }
+.palier-buy { display: block; margin-top: 24px; padding: 12px 20px; font-size: 12px; }
 .palier-card:hover, .palier-card.featured { background: #161410; }
 .palier-card:hover::before, .palier-card.featured::before { background: var(--gold); }
 .palier-card:hover .palier-num, .palier-card.featured .palier-num { color: rgba(201,168,76,0.15); }
@@ -406,7 +407,8 @@ body.no-scroll { overflow: hidden; }
   font-size: 14px; line-height: 1; display: flex; align-items: center; justify-content: center;
   transition: border-color 0.2s ease, color 0.2s ease;
 }
-.qty button:hover { border-color: var(--gold); color: var(--gold); }
+.qty button:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+.qty button:disabled { opacity: 0.3; cursor: not-allowed; }
 .qty span { font-size: 13px; min-width: 16px; text-align: center; font-variant-numeric: tabular-nums; }
 .cart-pay {
   display: inline-block; margin-top: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
